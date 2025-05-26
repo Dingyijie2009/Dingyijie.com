@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>恭喜你找到彩蛋！ - Dingyijie.com</title>
     <style>
-        /* 默认隐藏整个页面内容 */
         body {
-            display: none;
             font-family: 'Nunito', sans-serif;
             margin: 0;
             padding: 0;
             min-height: 100vh;
+            display: flex;
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -87,20 +86,6 @@
             100% { transform: translateY(100vh) rotate(360deg); }
         }
     </style>
-    <script>
-        // 检查验证标志
-        const isAuthenticated = localStorage.getItem('auth') === 'verified';
-
-        if (isAuthenticated) {
-            // 如果已验证，显示页面内容
-            document.addEventListener('DOMContentLoaded', () => {
-                document.body.style.display = 'flex'; // 显示页面
-            });
-        } else {
-            // 如果未验证，跳转到错误页面或登录页面
-            window.location.href = 'https://dingyijie.com'; // 替换为你的登录页面路径
-        }
-    </script>
 </head>
 <body>
     <div class="success-container">
@@ -124,14 +109,25 @@
             confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
             confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
             document.body.appendChild(confetti);
-
+            
             setTimeout(() => {
                 confetti.remove();
             }, 5000);
         }
 
+
         // Create confetti continuously
         setInterval(createConfetti, 100);
+        
+        
+             // 检查验证标志
+      const isAuthenticated = localStorage.getItem('auth') === 'verified';
+
+      if (!isAuthenticated) {
+        // 如果未验证，跳转到错误页面或登录页面
+        alert('未授权访问，请先完成验证。');
+        window.location.href = '/index.html'; // 或其他页面
+      }
     </script>
 </body>
 </html>
