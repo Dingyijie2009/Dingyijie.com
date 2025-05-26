@@ -2,33 +2,77 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>Google Authenticator 二维码绑定</title>
+  <title>系统设置 - 验证器绑定</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 60px; }
-    .qrcode-box { display: inline-block; padding: 24px; border: 1px solid #eee; border-radius: 8px; background: #fafafa; }
-    .secret { font-size: 1.2em; color: #333; margin: 16px 0; }
-    .tip { color: #888; margin-top: 12px; }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .window {
+      width: 360px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      padding: 32px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 12px;
+    }
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      margin: 24px 0;
+    }
+    .secret {
+      font-size: 14px;
+      font-weight: 500;
+      background-color: #f5f5f5;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #444;
+      word-break: break-all;
+    }
+    .tip {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="qrcode-box">
-    <h2>绑定 Google Authenticator</h2>
+  <div class="window">
+    <div class="title">绑定 Google Authenticator</div>
     <div id="qrcode"></div>
-    <div class="secret">密钥：<span id="secret"></span></div>
-    <div class="tip">请用 Google Authenticator 或类似APP扫描二维码，或手动输入密钥。</div>
+    <div id="secret" class="secret">🔑</div>
+    <div class="tip">请使用 Google Authenticator 或其他 TOTP 应用扫描二维码，或手动输入上方密钥。</div>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script>
     const secret = 'JBSWY3DPEHPK3PXP';
-    const account = 'dingyijie.com';
-    const issuer = 'Dingyijie';
+    const account = 'Dingyijie.com';
+    const issuer = 'Easter Egg';
     const otpauth = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(account)}?secret=${secret}&issuer=${encodeURIComponent(issuer)}`;
 
-    document.getElementById('secret').textContent = secret;
+    document.getElementById('secret').textContent = `🔑 ${secret}`;
     new QRCode(document.getElementById('qrcode'), {
       text: otpauth,
-      width: 200,
-      height: 200
+      width: 180,
+      height: 180
     });
   </script>
 </body>
