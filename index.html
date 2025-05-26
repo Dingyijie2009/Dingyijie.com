@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dingyijie.com</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="override.css">
+    <link rel="stylesheet" href="kawaii.css">
+    <link rel="stylesheet" href="calendar.css">
+    <link rel="icon" type="image/png" href="images/icon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- 谷歌翻译脚本 -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'zh-CN',
+                includedLanguages: 'en,zh-CN,zh-TW,ja,ko,es,fr,de,ru,ar,hi,pt,id,th,vi,ms',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                multilanguagePage: true,
+                gaTrack: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit&hl=en"></script>
+</head>
+<body>
+    <div id="google_translate_element"></div>
+    <header class="header">
+        <nav class="nav">
+            <a href="/" class="logo">Dingyijie.com</a>
+            <div class="nav-links">
+                <div class="nav-item">
+                    <a href="/">Home</a>
+                    <div class="nav-submenu">
+                        <a href="https://cn.dingyijie.com">CN-Home</a>
+                    </div>
+                </div>
+                <a href="https://blog.dingyijie.com">Blog</a>
+                <a href="https://buy.dingyijie.com">Purchase</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="detective-badge">
+                <img src="images/icon.jpg" alt="Detective Badge" class="avatar">
+            </div>
+            <div class="hero-content">
+                <h1>Welcome to Dingyijie.com</h1>
+                <p>Made by Dingyijie</p>
+            </div>
+            
+            <div class="contact">
+                <div class="social-links">
+                    <a href="https://instagram.com/HenriqueDing2009" target="_blank">
+                        <img src="images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="images/default.png" target="_blank">
+                        <img src="images/wechat.png" alt="WeChat">
+                    </a>
+                    <a href="https://qm.qq.com/q/BhBOvZJylq" target="_blank">
+                        <img src="images/qq.png" alt="QQ">
+                    </a>
+                </div>
+                <p><a href="mailto:me@dingyijie.com" class="email-link">📧 me@dingyijie.com</a></p>
+            </div>
+        </section>
+
+        <section class="announcement-section">
+            <div class="announcement-container">
+                <div class="announcement-header">
+                    <span class="announcement-icon">📢</span>
+                    <h2>最新公告</h2>
+                </div>
+                <div class="announcement-content">
+                    <div class="announcement-item">
+                        <span class="announcement-date">2024-05-25</span>
+                        <p>本网站由dingyijie提供了彩蛋<a href="javascript:void(0);" id="egg-btn">🥚</a></p>
+                    </div>
+                    <div class="announcement-item">
+                        <span class="announcement-date">2024-05-25</span>
+                        <p>中国区的兄弟们访问右边网站没那么卡🤭👉 <a href="https://cn.dingyijie.com">cn.dingyijie.com</a> 查看CN区！</p>
+                    </div>
+                    <div class="announcement-item">
+                        <span class="announcement-date">2024-05-24</span>
+                        <p>新版博客系统已经上线，欢迎访问 <a href="https://blog.dingyijie.com">blog.dingyijie.com</a> 查看更多内容！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="message-tree-section">
+            <div class="message-tree-container">
+                <div class="tree-header">
+                    <span class="tree-icon">🌳</span>
+                    <h2>留言树</h2>
+                    <div class="tree-hint">
+                        <span class="hint-icon">💭</span>
+                        轻点空白处添加留言
+                        <span class="hint-arrow">✍️</span>
+                    </div>
+                </div>
+                <div class="tree-content-wrapper">
+                    <div class="tree-content">
+                        <div id="message-leaves"></div>
+                        <div class="tree-trunk"></div>
+                    </div>
+                </div>
+                <!-- 留言表单弹窗 -->
+                <div id="message-modal" class="message-modal">
+                    <div class="modal-content">
+                        <textarea id="message-input" placeholder="写下你的留言..."></textarea>
+                        <div class="modal-buttons">
+                            <button id="close-modal">取消</button>
+                            <button id="submit-message">发送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="calendar-section">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2>📅 我的日历</h2>
+                    <div class="calendar-nav">
+                        <button id="prevMonth">◀</button>
+                        <h3 id="currentMonth"></h3>
+                        <button id="nextMonth">▶</button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+                <div class="events-list" id="eventsList"></div>
+            </div>
+            <!-- 添加日程弹窗 -->
+            <div id="eventModal" class="event-modal">
+                <div class="modal-content">
+                    <h3>添加新日程</h3>
+                    <form id="eventForm">
+                        <input type="date" id="eventDate" required>
+                        <input type="text" id="eventTitle" placeholder="日程标题" required>
+                        <textarea id="eventDescription" placeholder="日程详情"></textarea>
+                        <div class="modal-buttons">
+                            <button type="submit">保存</button>
+                            <button type="button" id="closeEventModal">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" id="caidan">
+        <p>© 2024 Dingyijie.com - Inspired by Detective Conan</p>
+    </footer>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <!-- Firebase 配置 -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- 消息树脚本 -->
+    <script src="message-tree.js"></script>
+    <!-- 日历脚本 -->
+    <script src="calendar.js"></script>
+    <!-- 彩蛋脚本 -->
+    <script src="easter-egg.js"></script>
+
+    <!-- Google Authenticator 验证弹窗 -->
+    <div id="totp-modal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <h3>🔒 输入验证码</h3>
+        <p>请输入 Google Authenticator 生成的6位验证码</p>
+        <input id="totp-input" type="text" maxlength="6" pattern="\d{6}" autocomplete="one-time-code" style="font-size:2em;text-align:center;" />
+        <div style="margin: 10px 0;">
+          <button id="totp-verify" style="background:#4caf50;color:#fff;padding:8px 16px;">验证</button>
+          <button id="totp-cancel" style="background:#f44336;color:#fff;padding:8px 16px;">取消</button>
+        </div>
+        <div>
+          <a href="qrcode.html" target="_blank">点击这里设置 Google Authenticator</a>
+        </div>
+        <div id="totp-error" style="color:red;margin-top:8px;display:none;"></div>
+      </div>
+    </div>
+</body>
+</html>

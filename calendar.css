@@ -1,0 +1,447 @@
+.calendar-section {
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    margin: 2rem auto;
+    max-width: 1200px;
+}
+
+.calendar-container {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    gap: 2rem;
+    position: relative;
+}
+
+.calendar-header {
+    grid-column: 1 / -1;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+}
+
+.calendar-header h2 {
+    color: #333;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f5f5f5;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.calendar-nav h3 {
+    min-width: 140px;
+    text-align: center;
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2196f3;
+    font-weight: 500;
+}
+
+.calendar-nav button {
+    background: white;
+    border: 1px solid #e0e0e0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-nav button:hover {
+    background-color: #2196f3;
+    color: white;
+    border-color: #2196f3;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.calendar-day-header {
+    text-align: center;
+    padding: 0.5rem 0;
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    padding: 0.5rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #333;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+.calendar-day.empty {
+    background: #fafafa;
+    color: #bbb;
+    cursor: default;
+}
+
+.calendar-day:not(.empty):hover {
+    background: #e3f2fd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+    color: #2196f3;
+    font-weight: 500;
+}
+
+.calendar-day.today {
+    background: #e3f2fd;
+    color: #2196f3;
+    font-weight: 600;
+    border: 1px solid #2196f3;
+}
+
+.calendar-day.has-events {
+    color: #2196f3;
+    font-weight: 500;
+}
+
+.calendar-day.has-events::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #2196f3;
+    border-radius: 50%;
+}
+
+.events-list {
+    padding: 1.5rem;
+    background: #fafafa;
+    border-radius: 12px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+}
+
+.events-list h3 {
+    margin: 0 0 1.5rem;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e3f2fd;
+    position: sticky;
+    top: 0;
+    background: #fafafa;
+    z-index: 1;
+}
+
+.events-container {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    padding-right: 0.5rem;
+}
+
+.events-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.events-container::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 3px;
+}
+
+.events-container::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 3px;
+}
+
+.events-container::-webkit-scrollbar-thumb:hover {
+    background: #bdbdbd;
+}
+
+.event-item {
+    background: white;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 8px;
+    border-left: 3px solid #2196f3;
+    position: relative;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.event-item:hover {
+    transform: translateX(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.event-item h4 {
+    margin: 0;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: normal;
+}
+
+.event-item .event-title {
+    margin: 0.25rem 0;
+    color: #333;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.event-item .event-desc {
+    margin: 0.25rem 0 0;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.delete-event {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 0.15rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: all 0.2s;
+}
+
+.event-item:hover .delete-event {
+    opacity: 1;
+}
+
+.delete-event:hover {
+    background: #ffebee;
+    color: #f44336;
+}
+
+.add-event-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.add-event-btn:hover {
+    background: #1976d2;
+    transform: translateY(-1px);
+}
+
+.add-event-btn::before {
+    content: '+';
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.event-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: flex-start;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+    padding-top: 10vh;
+}
+
+.event-modal .modal-content {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    transform: translateY(0);
+    transition: transform 0.3s, opacity 0.3s;
+    opacity: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin-top: 20px;
+}
+
+.event-modal.show {
+    opacity: 1;
+}
+
+.event-modal.show .modal-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .event-modal {
+        padding-top: 5vh;
+    }
+    
+    .event-modal .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+}
+
+/* 横屏模式适配 */
+@media (orientation: landscape) and (max-height: 600px) {
+    .event-modal {
+        padding-top: 2vh;
+    }
+    
+    .event-modal .modal-content {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+}
+
+.event-modal h3 {
+    margin: 0 0 1.25rem;
+    color: #333;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.event-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.event-modal input,
+.event-modal textarea {
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.event-modal input:focus,
+.event-modal textarea:focus {
+    border-color: #2196f3;
+    outline: none;
+}
+
+.event-modal textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.event-modal .modal-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+}
+
+.event-modal button {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.event-modal button[type="submit"] {
+    background: #2196f3;
+    color: white;
+}
+
+.event-modal button[type="submit"]:hover {
+    background: #1976d2;
+}
+
+.event-modal button[type="button"] {
+    background: #e0e0e0;
+    color: #666;
+}
+
+.event-modal button[type="button"]:hover {
+    background: #d5d5d5;
+}
+
+.event-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    margin-bottom: 5px;
+    font-weight: normal;
+}
+
+.event-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 4px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.calendar-day:hover .event-tooltip {
+    display: block;
+} 

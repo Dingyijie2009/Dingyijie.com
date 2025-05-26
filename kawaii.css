@@ -1,0 +1,460 @@
+/* 男生风格的配色和装饰 */
+:root {
+    --main-blue: #2B4865;      /* 深邃的蓝色 */
+    --accent-blue: #256D85;    /* 活力蓝 */
+    --light-blue: #8FE3CF;     /* 清新蓝 */
+    --soft-white: #F5F5F5;     /* 柔和的白色 */
+    --dark-gray: #2C3333;      /* 深灰色 */
+    --shadow-color: rgba(43, 72, 101, 0.2);
+    --gradient-primary: linear-gradient(135deg, var(--main-blue), var(--accent-blue));
+}
+
+body {
+    background: var(--soft-white);
+    background-image: 
+        radial-gradient(circle at 20% 20%, rgba(43, 72, 101, 0.05) 0%, transparent 8%),
+        radial-gradient(circle at 80% 80%, rgba(37, 109, 133, 0.05) 0%, transparent 8%);
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 3px solid var(--main-blue);
+    box-shadow: 0 5px 20px var(--shadow-color);
+    padding: 15px 0;
+}
+
+.logo {
+    color: var(--main-blue);
+    font-weight: bold;
+    text-shadow: 1px 1px 2px var(--shadow-color);
+}
+
+.nav-links a {
+    color: var(--main-blue);
+    font-weight: 600;
+}
+
+.nav-links a:hover {
+    background: var(--gradient-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.hero {
+    position: relative;
+    margin-top: -90px;
+    padding: 30px;
+    background: white;
+    background-image: 
+        linear-gradient(45deg, rgba(43, 72, 101, 0.03) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(43, 72, 101, 0.03) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(43, 72, 101, 0.03) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(43, 72, 101, 0.03) 75%);
+    background-size: 20px 20px;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px var(--shadow-color),
+        0 0 0 1px rgba(43, 72, 101, 0.1);
+}
+
+.hero-content {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.hero-content h1 {
+    color: var(--main-blue);
+    margin-bottom: 10px;
+    font-size: 2.5em;
+}
+
+.hero-content p {
+    color: var(--dark-gray);
+    opacity: 0.8;
+    font-size: 1.1em;
+}
+
+/* 移除装饰线 */
+.hero h1,
+.hero p {
+    border: none;
+    position: relative;
+    z-index: 1;
+}
+
+/* 如果需要分隔，使用渐变替代实线 */
+.hero .divider {
+    height: 2px;
+    background: linear-gradient(to right, 
+        transparent, 
+        var(--main-blue) 20%, 
+        var(--main-blue) 80%, 
+        transparent
+    );
+    margin: 15px 0;
+    opacity: 0.1;
+}
+
+/* 左侧火箭 */
+.hero::before {
+    content: "🚀";
+    position: absolute;
+    top: 50%;
+    left: -60px;
+    font-size: 40px;
+    transform: translateY(-50%);
+    animation: rocketLeft 3s infinite ease-in-out;
+    z-index: 2;
+    display: block !important;
+}
+
+/* 右侧火箭 */
+.hero::after {
+    content: "🚀";
+    position: absolute;
+    top: 50%;
+    right: -60px;
+    font-size: 40px;
+    transform: translateY(-50%) scaleX(-1);
+    animation: rocketRight 3s infinite ease-in-out;
+    z-index: 2;
+    display: block !important;
+}
+
+/* 火箭动画 */
+@keyframes rocketLeft {
+    0%, 100% {
+        transform: translateY(-50%) rotate(-10deg);
+    }
+    50% {
+        transform: translateY(-50%) rotate(10deg);
+    }
+}
+
+@keyframes rocketRight {
+    0%, 100% {
+        transform: translateY(-50%) scaleX(-1) rotate(-10deg);
+    }
+    50% {
+        transform: translateY(-50%) scaleX(-1) rotate(10deg);
+    }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .hero::before {
+        left: -40px;
+        font-size: 30px;
+    }
+    
+    .hero::after {
+        right: -40px;
+        font-size: 30px;
+    }
+}
+
+.detective-badge img {
+    border: 3px solid white;
+    box-shadow: 
+        0 10px 20px var(--shadow-color),
+        0 0 0 3px var(--main-blue);
+}
+
+.announcement-container {
+    background: white;
+    background-image: 
+        linear-gradient(45deg, rgba(43, 72, 101, 0.03) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(43, 72, 101, 0.03) 25%, transparent 25%);
+    background-size: 20px 20px;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 
+        0 15px 30px var(--shadow-color),
+        0 0 0 1px rgba(43, 72, 101, 0.1);
+}
+
+.announcement-item {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--main-blue);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.announcement-item::before {
+    content: "📢";  /* 改用喇叭替代星星 */
+    opacity: 0.2;
+}
+
+.social-links a {
+    background: white;
+    border: 2px solid var(--main-blue);
+    box-shadow: 
+        0 8px 16px var(--shadow-color),
+        0 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.social-links a:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-blue);
+    background: var(--gradient-primary);
+}
+
+.social-links a:hover img {
+    filter: brightness(0) invert(1);
+}
+
+.contact {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--main-blue);
+    border-style: solid;
+    box-shadow: 0 10px 20px var(--shadow-color);
+}
+
+.contact::before {
+    content: "📧";  /* 改用邮件图标 */
+    opacity: 0.2;
+}
+
+.email-link {
+    background: white;
+    color: var(--main-blue);
+    border: 2px solid var(--main-blue);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.email-link:hover {
+    background: var(--gradient-primary);
+    color: white;
+    transform: translateY(-3px);
+}
+
+.add-message-btn {
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 12px 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px var(--shadow-color);
+    transition: all 0.3s ease;
+}
+
+.add-message-btn::before {
+    content: "✏️";  /* 改用铅笔替代闪光 */
+    margin-right: 8px;
+}
+
+.add-message-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px var(--shadow-color);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--soft-white);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 5px;
+    border: 2px solid var(--soft-white);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--main-blue);
+}
+
+/* 动画效果 */
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg); 
+    }
+    50% { 
+        transform: translateY(-15px) rotate(5deg); 
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        transform: scale(1); 
+    }
+    50% { 
+        transform: scale(1.03); 
+    }
+}
+
+/* 响应式设计调整 */
+@media (max-width: 768px) {
+    .main {
+        padding-top: 40px;  /* 减少顶部padding */
+    }
+    
+    .hero {
+        margin-top: 20px;  /* 减少hero区域的上边距 */
+        padding: 30px 20px;  /* 减少内边距 */
+    }
+
+    .detective-badge img {
+        width: 100px;  /* 减小头像大小 */
+        height: 100px;
+    }
+
+    .hero-content h1 {
+        font-size: 1.8em;  /* 减小标题字体 */
+        margin-bottom: 5px;
+    }
+
+    .hero-content p {
+        font-size: 1em;  /* 减小描述文字大小 */
+        margin-bottom: 15px;
+    }
+
+    .social-links {
+        gap: 1.5rem;  /* 减少社交图标间距 */
+        margin: 1.5rem 0;  /* 减少上下边距 */
+    }
+
+    .social-links a {
+        padding: 10px;  /* 减小社交图标的内边距 */
+    }
+
+    .social-links img {
+        width: 25px;  /* 减小社交图标大小 */
+        height: 25px;
+    }
+
+    .contact {
+        margin-top: 1rem;  /* 减少联系方式区域的上边距 */
+        padding: 1rem;  /* 减少内边距 */
+    }
+
+    .header {
+        padding: 8px 0;  /* 减少header的内边距 */
+    }
+
+    .nav {
+        padding: 5px 15px;  /* 减少导航栏的内边距 */
+    }
+
+    .logo {
+        font-size: 1.5rem;  /* 减小logo字体大小 */
+    }
+
+    .nav-links a {
+        padding: 6px 12px;  /* 减少导航链接的内边距 */
+        font-size: 0.9rem;  /* 减小导航链接字体大小 */
+    }
+
+    #google_translate_element {
+        height: 30px;  /* 控制谷歌翻译栏高度 */
+        overflow: hidden;
+    }
+}
+
+/* 确保谷歌翻译栏在移动端更紧凑 */
+@media (max-width: 768px) {
+    .goog-te-banner-frame {
+        height: 30px !important;
+    }
+    
+    .goog-te-banner {
+        height: 30px !important;
+    }
+}
+
+.nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main {
+    padding-top: 80px;  /* 减少主内容区域的上边距 */
+}
+
+/* 添加头像动画 */
+.avatar {
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 8px 16px var(--shadow-color);
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.avatar:hover {
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: 0 12px 24px var(--shadow-color);
+    border-color: var(--main-blue);
+}
+
+/* 新增板块样式 */
+.custom-section {
+    margin: 3rem auto;
+    padding: 0 2rem;
+    max-width: 1200px;
+}
+
+.custom-container {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 
+        0 15px 30px var(--shadow-color),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.custom-header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.custom-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.custom-content {
+    min-height: 500px;
+    padding: 2rem;
+    position: relative;
+    background: linear-gradient(to bottom, 
+        rgba(249, 255, 255, 0.8), 
+        rgba(232, 245, 233, 0.8));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .custom-section {
+        padding: 0 1rem;
+    }
+    
+    .custom-content {
+        min-height: 400px;
+    }
+} 

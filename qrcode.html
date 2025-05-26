@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Google Authenticator 二维码绑定</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 60px; }
+    .qrcode-box { display: inline-block; padding: 24px; border: 1px solid #eee; border-radius: 8px; background: #fafafa; }
+    .secret { font-size: 1.2em; color: #333; margin: 16px 0; }
+    .tip { color: #888; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="qrcode-box">
+    <h2>绑定 Google Authenticator</h2>
+    <div id="qrcode"></div>
+    <div class="secret">密钥：<span id="secret"></span></div>
+    <div class="tip">请用 Google Authenticator 或类似APP扫描二维码，或手动输入密钥。</div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    // 这里的 secret 必须与你 verify-totp.js 里的 SECRET 保持一致
+    const secret = 'JBSWY3DPEHPK3PXP'; // 请替换为你的密钥
+    const account = 'dingyijie.com';
+    const issuer = 'Dingyijie';
+    const otpauth = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(account)}?secret=${secret}&issuer=${encodeURIComponent(issuer)}`;
+
+    document.getElementById('secret').textContent = secret;
+    QRCode.toCanvas(document.getElementById('qrcode'), otpauth, { width: 200 }, function (error) {
+      if (error) document.getElementById('qrcode').textContent = '二维码生成失败';
+    });
+  </script>
+</body>
+</html>
