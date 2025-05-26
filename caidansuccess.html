@@ -115,8 +115,19 @@
             }, 5000);
         }
 
+
         // Create confetti continuously
         setInterval(createConfetti, 100);
+        
+        
+             // 检查验证标志
+      const isAuthenticated = localStorage.getItem('auth') === 'verified';
+
+      if (!isAuthenticated) {
+        // 如果未验证，跳转到错误页面或登录页面
+        alert('未授权访问，请先完成验证。');
+        window.location.href = '/index.html'; // 或其他页面
+      }
     </script>
 </body>
 </html> 
