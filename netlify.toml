@@ -1,4 +1,4 @@
-[[redirects]]
-  from = "/.netlify/functions/*"
-  status = 403
-  force = true
+[[headers]]
+  for = "/*"
+  [headers.values]
+  Cache-Control = "no-cache, no-store, must-revalidate"
