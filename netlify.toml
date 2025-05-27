@@ -1,5 +1,5 @@
 [[redirects]]
-  from = "/netlify/*"
+  from = "/.netlify/*"
   to = "https://dingyijie.com"
-  status = 403
+  status = 301
   force = true
