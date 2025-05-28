@@ -223,9 +223,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (totpVerifyBtn) {
                         totpVerifyBtn.onclick = async () => {
                             const totpCode = input.value.trim();
+                            const errorDiv = document.getElementById('totp-error');
                             
                             if (totpCode.length !== 6 || !/^\d+$/.test(totpCode)) {
-                                const errorDiv = document.getElementById('totp-error');
                                 if (errorDiv) {
                                     errorDiv.textContent = '请输入6位数字验证码';
                                     errorDiv.style.display = 'block';
@@ -233,35 +233,35 @@ document.addEventListener('DOMContentLoaded', () => {
                                 return;
                             }
 
-                            // 获取当前时间戳（30秒为一个周期）
-                            const timeStep = Math.floor(Date.now() / 30000);
-                            
                             try {
-                                // 验证TOTP - 使用GET请求，包含时间戳
-                                const response = await fetch(`/.netlify/functions/verify-totp?code=${totpCode}&t=${timeStep}`, {
+                                // 验证TOTP
+                                const response = await fetch(`/.netlify/functions/verify-totp?code=${totpCode}`, {
                                     method: 'GET',
                                     headers: {
-                                        'Cache-Control': 'no-cache'  // 防止缓存
+                                        'Accept': 'application/json',
+                                        'Cache-Control': 'no-cache'
                                     }
                                 });
-                                
-                                const data = await response.json();
-                                
-                                if (response.ok && data.valid === true) {
+
+                                // 检查HTTP状态码
+                                if (response.status === 200) {
                                     setEasterEggVerified(); // 设置验证通过标记
                                     window.location.href = 'caidansuccess.html';
-                                } else {
-                                    const errorDiv = document.getElementById('totp-error');
+                                } else if (response.status === 401) {
                                     if (errorDiv) {
-                                        errorDiv.textContent = data.message || '验证码错误';
+                                        errorDiv.textContent = '验证码错误或已过期';
+                                        errorDiv.style.display = 'block';
+                                    }
+                                } else {
+                                    if (errorDiv) {
+                                        errorDiv.textContent = '验证服务暂时不可用，请稍后再试';
                                         errorDiv.style.display = 'block';
                                     }
                                 }
                             } catch (error) {
-                                console.error("Error verifying TOTP: ", error);
-                                const errorDiv = document.getElementById('totp-error');
+                                console.error("Error verifying TOTP:", error);
                                 if (errorDiv) {
-                                    errorDiv.textContent = '验证过程出错';
+                                    errorDiv.textContent = '网络错误，请检查网络连接';
                                     errorDiv.style.display = 'block';
                                 }
                             }
