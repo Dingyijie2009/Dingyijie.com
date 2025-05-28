@@ -243,13 +243,15 @@ document.addEventListener('DOMContentLoaded', () => {
                                     body: JSON.stringify({ code: totpCode })
                                 });
                                 
-                                if (response.ok) {
+                                const data = await response.json();
+                                
+                                if (response.ok && data.success === true) {
                                     setEasterEggVerified(); // 设置验证通过标记
                                     window.location.href = 'caidansuccess.html';
                                 } else {
                                     const errorDiv = document.getElementById('totp-error');
                                     if (errorDiv) {
-                                        errorDiv.textContent = '验证码错误';
+                                        errorDiv.textContent = data.message || '验证码错误';
                                         errorDiv.style.display = 'block';
                                     }
                                 }
