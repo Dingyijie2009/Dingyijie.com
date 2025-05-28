@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             
                             try {
                                 // 验证TOTP
-                                const response = await fetch('/verify-totp', {
+                                const response = await fetch('/.netlify/functions/verify-totp', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
