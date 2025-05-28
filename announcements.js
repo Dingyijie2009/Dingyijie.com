@@ -55,17 +55,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 在点击彩蛋按钮时设置一个标记
     function setEasterEggVerified() {
-        localStorage.setItem('easterEggVerified', 'true');
-        localStorage.setItem('easterEggVerifiedTime', Date.now().toString());
+        sessionStorage.setItem('easterEggVerified', 'true');
+        sessionStorage.setItem('easterEggVerifiedTime', Date.now().toString());
     }
 
     // 检查是否已通过彩蛋验证
     function checkEasterEggVerification() {
-        const verified = localStorage.getItem('easterEggVerified') === 'true';
-        const verifiedTime = parseInt(localStorage.getItem('easterEggVerifiedTime') || '0');
+        const verified = sessionStorage.getItem('easterEggVerified') === 'true';
+        const verifiedTime = parseInt(sessionStorage.getItem('easterEggVerifiedTime') || '0');
         const now = Date.now();
-        // 验证时间在30分钟内有效
-        return verified && (now - verifiedTime < 30 * 60 * 1000);
+        // 验证时间在2分钟内有效
+        return verified && (now - verifiedTime < 2 * 60 * 1000);
+    }
+
+    // 清除验证状态
+    function clearEasterEggVerification() {
+        sessionStorage.removeItem('easterEggVerified');
+        sessionStorage.removeItem('easterEggVerifiedTime');
     }
 
     if (submitAnnouncementBtn) {
@@ -208,6 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 添加点击事件 - 使用 TOTP 验证
             eggBtn.addEventListener('click', () => {
+                // 清除之前的验证状态
+                clearEasterEggVerification();
+                
                 const modal = document.getElementById('totp-modal');
                 if (modal) {
                     updateTotpModalUI(true); // 使用TOTP验证模式
@@ -249,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     setEasterEggVerified(); // 设置验证通过标记
                                     window.location.href = 'caidansuccess.html';
                                 } else {
+                                    clearEasterEggVerification(); // 清除验证状态
                                     const errorDiv = document.getElementById('totp-error');
                                     if (errorDiv) {
                                         errorDiv.textContent = data.message || '验证码错误';
@@ -257,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             } catch (error) {
                                 console.error("Error verifying TOTP:", error);
+                                clearEasterEggVerification(); // 清除验证状态
                                 const errorDiv = document.getElementById('totp-error');
                                 if (errorDiv) {
                                     errorDiv.textContent = '验证过程出错';
