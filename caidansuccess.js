@@ -1,13 +1,17 @@
-// 在页面加载时检查是否通过TOTP验证
-document.addEventListener('DOMContentLoaded', async () => {
+// 检查是否已通过彩蛋验证
+function checkEasterEggVerification() {
+    const verified = localStorage.getItem('easterEggVerified') === 'true';
+    const verifiedTime = parseInt(localStorage.getItem('easterEggVerifiedTime') || '0');
+    const now = Date.now();
+    // 验证时间在30分钟内有效
+    return verified && (now - verifiedTime < 30 * 60 * 1000);
+}
+
+// 在页面加载时检查验证状态
+document.addEventListener('DOMContentLoaded', () => {
     try {
-        // 检查验证状态
-        const response = await fetch('/.netlify/functions/verify-totp/status', {
-            method: 'GET'
-        });
-        
-        if (!response.ok) {
-            // 如果未通过验证，重定向到主页
+        if (!checkEasterEggVerification()) {
+            // 如果未通过验证或验证已过期，重定向到主页
             window.location.replace('https://dingyijie.com');
             return;
         }

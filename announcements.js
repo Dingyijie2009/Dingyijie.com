@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             input.autocomplete = 'one-time-code';
             extraInfo.style.display = 'block';
         } else {
-            description.textContent = '请输入今天的日期作为密码（格式：MMDD，例如5月26日为0526）';
+            description.textContent = '请输入密码';
             input.maxLength = '4';
             input.pattern = '\\d{4}';
             input.autocomplete = 'off';
@@ -51,6 +51,21 @@ document.addEventListener('DOMContentLoaded', () => {
         
         input.value = ''; // 清空输入
         document.getElementById('totp-error').style.display = 'none'; // 清空错误信息
+    }
+
+    // 在点击彩蛋按钮时设置一个标记
+    function setEasterEggVerified() {
+        localStorage.setItem('easterEggVerified', 'true');
+        localStorage.setItem('easterEggVerifiedTime', Date.now().toString());
+    }
+
+    // 检查是否已通过彩蛋验证
+    function checkEasterEggVerification() {
+        const verified = localStorage.getItem('easterEggVerified') === 'true';
+        const verifiedTime = parseInt(localStorage.getItem('easterEggVerifiedTime') || '0');
+        const now = Date.now();
+        // 验证时间在30分钟内有效
+        return verified && (now - verifiedTime < 30 * 60 * 1000);
     }
 
     if (submitAnnouncementBtn) {
@@ -225,6 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 });
                                 
                                 if (response.ok) {
+                                    setEasterEggVerified(); // 设置验证通过标记
                                     window.location.href = 'caidansuccess.html';
                                 } else {
                                     const errorDiv = document.getElementById('totp-error');
