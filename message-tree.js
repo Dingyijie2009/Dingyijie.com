@@ -1,5 +1,6 @@
 // 使用全局的 Realtime Database 实例
 const messagesRef = window.realtimeDb.ref('messages');
+const violationsRef = window.realtimeDb.ref('violations'); // 添加违规记录引用
 
 // DOM 元素
 const messageModal = document.getElementById('message-modal');
@@ -15,6 +16,98 @@ const treeContentWrapper = document.querySelector('.tree-content-wrapper');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 let originalHeight;
 let originalScrollPos;
+
+// 添加用户行为监控
+const userBehavior = {
+    messageCount: 0,
+    lastMessageTime: 0,
+    warningCount: 0,
+    blocked: false
+};
+
+// 内容检测规则
+const contentRules = {
+    maxMessagesPerMinute: 3,
+    maxWarnings: 3,
+    blockDuration: 30 * 60 * 1000, // 30分钟
+    suspiciousPatterns: [
+        /(.)\1{4,}/, // 重复字符超过4次
+        /[^\u4e00-\u9fa5a-zA-Z0-9\s.,!?，。！？]/g, // 特殊字符
+        /.{100,}/, // 超长消息
+        /(.)\1{2,}(.)\2{2,}/, // 重复模式
+    ]
+};
+
+// 添加违规记录
+async function recordViolation(message, reason, ip) {
+    try {
+        await violationsRef.push({
+            message: message,
+            reason: reason,
+            ip: ip,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            warningCount: userBehavior.warningCount,
+            blocked: userBehavior.blocked
+        });
+    } catch (error) {
+        console.error('Error recording violation:', error);
+    }
+}
+
+// 检查消息内容
+function checkMessageContent(message) {
+    // 检查是否被屏蔽
+    if (userBehavior.blocked) {
+        const blockTimeLeft = contentRules.blockDuration - (Date.now() - userBehavior.lastMessageTime);
+        if (blockTimeLeft > 0) {
+            throw new Error(`NMD，您的数据已监控至Dingyijie.com，请${Math.ceil(blockTimeLeft / 60000)}分钟后再试`);
+        } else {
+            userBehavior.blocked = false;
+            userBehavior.warningCount = 0;
+        }
+    }
+
+    // 检查发送频率
+    const now = Date.now();
+    if (now - userBehavior.lastMessageTime < 60000) { // 1分钟内
+        userBehavior.messageCount++;
+        if (userBehavior.messageCount > contentRules.maxMessagesPerMinute) {
+            userBehavior.warningCount++;
+            if (userBehavior.warningCount >= contentRules.maxWarnings) {
+                userBehavior.blocked = true;
+                userBehavior.lastMessageTime = now;
+                // 记录违规
+                recordViolation(message, '发送频率过高', getClientIP());
+                throw new Error('NMD，您的数据已监控至Dingyijie.com，您已被暂时屏蔽30分钟');
+            }
+            // 记录警告
+            recordViolation(message, '发送过于频繁', getClientIP());
+            throw new Error(`NMD，您的数据已监控至Dingyijie.com，发送过于频繁（警告${userBehavior.warningCount}/${contentRules.maxWarnings}）`);
+        }
+    } else {
+        userBehavior.messageCount = 1;
+    }
+
+    // 检查内容规则
+    for (const pattern of contentRules.suspiciousPatterns) {
+        if (pattern.test(message)) {
+            userBehavior.warningCount++;
+            if (userBehavior.warningCount >= contentRules.maxWarnings) {
+                userBehavior.blocked = true;
+                userBehavior.lastMessageTime = now;
+                // 记录违规
+                recordViolation(message, '内容违规', getClientIP());
+                throw new Error('NMD，您的数据已监控至Dingyijie.com，您已被暂时屏蔽30分钟');
+            }
+            // 记录警告
+            recordViolation(message, '内容不符合规范', getClientIP());
+            throw new Error(`NMD，您的数据已监控至Dingyijie.com，内容不符合规范（警告${userBehavior.warningCount}/${contentRules.maxWarnings}）`);
+        }
+    }
+
+    userBehavior.lastMessageTime = now;
+    return true;
+}
 
 // 显示模态框
 function showModal() {
@@ -74,7 +167,7 @@ closeModalBtn.addEventListener('click', (e) => {
     hideModal();
 });
 
-// 提交留言
+// 修改提交留言的处理函数
 submitMessageBtn.addEventListener('click', async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -90,16 +183,35 @@ submitMessageBtn.addEventListener('click', async (e) => {
     }
 
     try {
+        // 检查消息内容
+        checkMessageContent(message);
+
+        // 记录用户IP和消息内容到数据库
         await messagesRef.push({
             content: message,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            ip: await getClientIP(), // 需要实现getClientIP函数
+            warningCount: userBehavior.warningCount
         });
+
         hideModal();
     } catch (error) {
         console.error('Error adding message:', error);
-        alert('发送失败，请重试');
+        alert(error.message || '发送失败，请重试');
     }
 });
+
+// 获取客户端IP地址
+async function getClientIP() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        console.error('Error getting IP:', error);
+        return 'unknown';
+    }
+}
 
 // 加载和显示消息
 function createMessageLeaf(message, key, index, total) {
