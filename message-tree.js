@@ -76,13 +76,9 @@ function checkMessageContent(message) {
             if (userBehavior.warningCount >= contentRules.maxWarnings) {
                 userBehavior.blocked = true;
                 userBehavior.lastMessageTime = now;
-                // 记录违规
-                recordViolation(message, '发送频率过高', getClientIP());
-                throw new Error('NMD，您的数据已监控至Dingyijie.com，您已被暂时屏蔽30分钟');
+                return false; // 违规
             }
-            // 记录警告
-            recordViolation(message, '发送过于频繁', getClientIP());
-            throw new Error(`NMD，您的数据已监控至Dingyijie.com，发送过于频繁（警告${userBehavior.warningCount}/${contentRules.maxWarnings}）`);
+            return false; // 违规
         }
     } else {
         userBehavior.messageCount = 1;
@@ -95,18 +91,14 @@ function checkMessageContent(message) {
             if (userBehavior.warningCount >= contentRules.maxWarnings) {
                 userBehavior.blocked = true;
                 userBehavior.lastMessageTime = now;
-                // 记录违规
-                recordViolation(message, '内容违规', getClientIP());
-                throw new Error('NMD，您的数据已监控至Dingyijie.com，您已被暂时屏蔽30分钟');
+                return false; // 违规
             }
-            // 记录警告
-            recordViolation(message, '内容不符合规范', getClientIP());
-            throw new Error(`NMD，您的数据已监控至Dingyijie.com，内容不符合规范（警告${userBehavior.warningCount}/${contentRules.maxWarnings}）`);
+            return false; // 违规
         }
     }
 
     userBehavior.lastMessageTime = now;
-    return true;
+    return true; // 通过检查
 }
 
 // 显示模态框
@@ -183,21 +175,23 @@ submitMessageBtn.addEventListener('click', async (e) => {
     }
 
     try {
-        // 检查消息内容
-        checkMessageContent(message);
+        // 先检查消息内容
+        const isViolation = checkMessageContent(message);
+        
+        // 如果是违规内容，直接返回，不保存到数据库
+        if (!isViolation) {
+            // 记录违规信息
+            await recordViolation(message, '内容违规', await getClientIP());
+            throw new Error('NMD，您的数据已监控至Dingyijie.com，违规内容已被拦截');
+        }
 
-        // 记录用户IP和消息内容到数据库
-        const newMessageRef = await messagesRef.push({
+        // 只有非违规内容才保存到数据库
+        await messagesRef.push({
             content: message,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
             ip: await getClientIP(),
-            warningCount: userBehavior.warningCount
+            warningCount: 0 // 正常消息的警告次数为0
         });
-
-        // 如果消息被标记为违规，立即删除
-        if (userBehavior.warningCount > 0) {
-            await newMessageRef.remove();
-        }
 
         hideModal();
     } catch (error) {
