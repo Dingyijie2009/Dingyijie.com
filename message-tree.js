@@ -187,12 +187,17 @@ submitMessageBtn.addEventListener('click', async (e) => {
         checkMessageContent(message);
 
         // 记录用户IP和消息内容到数据库
-        await messagesRef.push({
+        const newMessageRef = await messagesRef.push({
             content: message,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            ip: await getClientIP(), // 需要实现getClientIP函数
+            ip: await getClientIP(),
             warningCount: userBehavior.warningCount
         });
+
+        // 如果消息被标记为违规，立即删除
+        if (userBehavior.warningCount > 0) {
+            await newMessageRef.remove();
+        }
 
         hideModal();
     } catch (error) {
@@ -289,10 +294,14 @@ function initializeMessageListener() {
             // 将数据转换为数组并按时间戳排序
             const messages = [];
             snapshot.forEach((childSnapshot) => {
-                messages.push({
-                    key: childSnapshot.key,
-                    data: childSnapshot.val()
-                });
+                const messageData = childSnapshot.val();
+                // 只显示非违规消息
+                if (messageData && messageData.content && (!messageData.warningCount || messageData.warningCount === 0)) {
+                    messages.push({
+                        key: childSnapshot.key,
+                        data: messageData
+                    });
+                }
             });
             
             // 按时间戳排序，确保顺序一致
