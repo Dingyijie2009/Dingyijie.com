@@ -93,25 +93,19 @@
                 <div class="tree-header">
                     <span class="tree-icon">🌳</span>
                     <h2>留言树</h2>
-                    <div class="tree-hint">
-                        <span class="hint-icon">💭</span>
-                        轻点空白处添加留言
-                        <span class="hint-arrow">✍️</span>
+                    <div class="tree-hint" style="background: rgba(255, 0, 0, 0.2);">
+                        <span class="hint-icon">⚠️</span>
+                        由于有个<a href="https://dingyijie.com/xiaopengyou.html" style="color: red; text-decoration: underline;">小朋友坏蛋</a>干扰本功能，此区域暂时关闭维护！
+                        <span class="hint-arrow">🚫</span>
                     </div>
                 </div>
                 <div class="tree-content-wrapper">
-                    <div class="tree-content">
+                    <div class="tree-content" style="opacity: 0.5; pointer-events: none;">
                         <div id="message-leaves"></div>
                         <div class="tree-trunk"></div>
-                    </div>
-                </div>
-                <!-- 留言表单弹窗 -->
-                <div id="message-modal" class="message-modal">
-                    <div class="modal-content">
-                        <textarea id="message-input" placeholder="写下你的留言..."></textarea>
-                        <div class="modal-buttons">
-                            <button id="close-modal">取消</button>
-                            <button id="submit-message">发送</button>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #ff4444; font-size: 1.2em; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+                            <div style="font-size: 3em; margin-bottom: 10px;">🚫</div>
+                            功能维护中
                         </div>
                     </div>
                 </div>
