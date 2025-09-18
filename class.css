@@ -12,20 +12,18 @@
 .header_content a{
     color:aqua
 }
-
-.main_content h2, .main_content p{
-    background-color: #080606;
-    width: 80%;
-    margin: auto;
-    font-size: 20px;
-    line-height: 1.6;
-}
-
-.main_content h2{
-    font-size: 30px;
-    color: #ffffff;
+.main_content h1{
+    font-size: 40px;
     text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
-    border-radius: 60px;
+    color: #ffffff;
+    background-color: #080606;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 20px;
+    margin-bottom:40px
+}
+.header_content span{
+    color: red;
+    font-weight: bold;
+    text-decoration: underline;
 }
