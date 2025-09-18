@@ -13,7 +13,7 @@
     color:aqua
 }
 
-.main_content{
+.main_content h2, .main_content p{
     background-color: #080606;
     width: 80%;
     margin: auto;
