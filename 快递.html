@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丁奕杰制作的匹对网站</title>
+
+<style>
+body{
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg,#4facfe,#00f2fe);
+    margin:0;
+    padding:20px;
+    color:#333;
+}
+
+h1{
+    text-align:center;
+    color:white;
+    margin-bottom:30px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.container{
+    display:flex;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.card{
+    flex:1;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+textarea{
+    width:100%;
+    height:250px;
+    padding:10px;
+    font-size:14px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    resize:none;
+}
+
+button{
+    padding:10px 20px;
+    margin:5px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    transition:0.3s;
+}
+
+.primary{
+    background:#4facfe;
+    color:white;
+}
+
+.primary:hover{
+    background:#00c6ff;
+}
+
+.success{
+    background:#00c851;
+    color:white;
+}
+
+.warning{
+    background:#ffbb33;
+    color:white;
+}
+
+.stats{
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    margin-bottom:20px;
+    animation: fadeIn 1.2s ease-in-out;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<h1>📦 快递单号智能核对系统</h1>
+
+<div class="container">
+    <div class="card">
+        <h3>所有单号清单（就是你要核对的）</h3>
+        <textarea id="allList" placeholder="支持Excel直接粘贴"></textarea>
+    </div>
+
+    <div class="card">
+        <h3>匹对清单（就是你要检查的东西）</h3>
+        <textarea id="matchList" placeholder="支持Excel直接粘贴"></textarea>
+    </div>
+</div>
+
+<div style="text-align:center;">
+    <button class="primary" onclick="checkTracking()">开始核对</button>
+</div>
+
+<div class="stats">
+    <p>总单号数量：<span id="totalCount">0</span></p>
+    <p>已匹对数量：<span id="matchedCount">0</span></p>
+    <p>未匹对数量：<span id="remainingCount">0</span></p>
+</div>
+
+<div class="card">
+    <h3>未匹对单号</h3>
+    <textarea id="result"></textarea>
+    <div style="margin-top:10px;">
+        <button class="success" onclick="copyResult()">一键复制</button>
+        <button class="warning" onclick="downloadTxt()">导出TXT</button>
+    </div>
+</div>
+
+<script>
+
+// 通用标准化（只按空格、换行、Tab分割）
+function normalizeInput(text){
+    return [...new Set(
+        text
+        .split(/\s+/)              // 按任意空白字符分割
+        .map(item => item.trim())
+        .filter(item => item !== "")
+        .map(item => item.toUpperCase())  // 忽略大小写
+    )];
+}
+
+function checkTracking(){
+
+    const allArray = normalizeInput(
+        document.getElementById("allList").value
+    );
+
+    const matchArray = normalizeInput(
+        document.getElementById("matchList").value
+    );
+
+    const allSet = new Set(allArray);
+
+    // ⭐ 输出：匹对清单里没有对上的
+    const notMatched = matchArray.filter(item => !allSet.has(item));
+    const matched = matchArray.filter(item => allSet.has(item));
+
+    document.getElementById("result").value =
+        notMatched.join("\n");
+
+    document.getElementById("totalCount").innerText =
+        matchArray.length;
+
+    document.getElementById("matchedCount").innerText =
+        matched.length;
+
+    document.getElementById("remainingCount").innerText =
+        notMatched.length;
+}
+
+function copyResult(){
+    const result = document.getElementById("result");
+    result.select();
+    document.execCommand("copy");
+    alert("已复制到剪贴板！");
+}
+
+function downloadTxt(){
+    const content = document.getElementById("result").value;
+    const blob = new Blob([content], {type: "text/plain"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "未对上清单.txt";
+    link.click();
+}
+
+</script>
+
+</body>
+</html>
