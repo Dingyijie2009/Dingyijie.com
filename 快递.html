@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>丁奕杰制作的匹对网站</title>
+<title>丁奕杰制作的匹对 + 查重系统</title>
 
 <style>
 body{
@@ -18,7 +18,6 @@ h1{
     text-align:center;
     color:white;
     margin-bottom:30px;
-    animation: fadeIn 1s ease-in-out;
 }
 
 .container{
@@ -33,11 +32,6 @@ h1{
     padding:20px;
     border-radius:15px;
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:translateY(-5px);
 }
 
 textarea{
@@ -57,16 +51,11 @@ button{
     border-radius:8px;
     cursor:pointer;
     font-size:14px;
-    transition:0.3s;
 }
 
 .primary{
     background:#4facfe;
     color:white;
-}
-
-.primary:hover{
-    background:#00c6ff;
 }
 
 .success{
@@ -85,44 +74,40 @@ button{
     border-radius:15px;
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
     margin-bottom:20px;
-    animation: fadeIn 1.2s ease-in-out;
-}
-
-@keyframes fadeIn{
-    from{opacity:0; transform:translateY(20px);}
-    to{opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
 
 <body>
 
-<h1>📦 快递单号智能核对系统</h1>
+<h1>📦 快递单号匹对 + 查重系统</h1>
 
 <div class="container">
     <div class="card">
-        <h3>所有单号清单（就是你要核对的）</h3>
+        <h3>所有单号清单（基准库）</h3>
         <textarea id="allList" placeholder="支持Excel直接粘贴"></textarea>
     </div>
 
     <div class="card">
-        <h3>匹对清单（就是你要检查的东西）</h3>
+        <h3>匹对清单（需要核对的）</h3>
         <textarea id="matchList" placeholder="支持Excel直接粘贴"></textarea>
     </div>
 </div>
 
 <div style="text-align:center;">
-    <button class="primary" onclick="checkTracking()">开始核对</button>
+    <button class="primary" onclick="checkTracking()">开始匹对</button>
+    <button class="warning" onclick="checkDuplicate()">检查匹对清单重复</button>
 </div>
 
 <div class="stats">
-    <p>总单号数量：<span id="totalCount">0</span></p>
+    <p>匹对清单总数量：<span id="totalCount">0</span></p>
     <p>已匹对数量：<span id="matchedCount">0</span></p>
     <p>未匹对数量：<span id="remainingCount">0</span></p>
+    <p>重复数量：<span id="duplicateCount">0</span></p>
 </div>
 
 <div class="card">
-    <h3>未匹对单号</h3>
+    <h3>输出结果</h3>
     <textarea id="result"></textarea>
     <div style="margin-top:10px;">
         <button class="success" onclick="copyResult()">一键复制</button>
@@ -132,32 +117,38 @@ button{
 
 <script>
 
-// 通用标准化（只按空格、换行、Tab分割）
-function normalizeInput(text){
-    return [...new Set(
-        text
-        .split(/\s+/)              // 按任意空白字符分割
+// 标准化输入（支持空格/换行/Excel）
+function splitInput(text){
+    return text
+        .split(/\s+/)
         .map(item => item.trim())
         .filter(item => item !== "")
-        .map(item => item.toUpperCase())  // 忽略大小写
-    )];
+        .map(item => item.toUpperCase());
 }
 
+// ================== 匹对功能 ==================
 function checkTracking(){
 
-    const allArray = normalizeInput(
+    const allArray = [...new Set(splitInput(
         document.getElementById("allList").value
-    );
+    ))];
 
-    const matchArray = normalizeInput(
+    const matchArray = splitInput(
         document.getElementById("matchList").value
     );
 
     const allSet = new Set(allArray);
 
-    // ⭐ 输出：匹对清单里没有对上的
-    const notMatched = matchArray.filter(item => !allSet.has(item));
-    const matched = matchArray.filter(item => allSet.has(item));
+    const notMatched = [];
+    const matched = [];
+
+    matchArray.forEach(item=>{
+        if(allSet.has(item)){
+            matched.push(item);
+        }else{
+            notMatched.push(item);
+        }
+    });
 
     document.getElementById("result").value =
         notMatched.join("\n");
@@ -170,8 +161,44 @@ function checkTracking(){
 
     document.getElementById("remainingCount").innerText =
         notMatched.length;
+
+    document.getElementById("duplicateCount").innerText = 0;
 }
 
+// ================== 查重功能 ==================
+function checkDuplicate(){
+
+    const matchArray = splitInput(
+        document.getElementById("matchList").value
+    );
+
+    const countMap = {};
+    const duplicates = [];
+
+    matchArray.forEach(item=>{
+        countMap[item] = (countMap[item] || 0) + 1;
+    });
+
+    for(const key in countMap){
+        if(countMap[key] > 1){
+            duplicates.push(key + "  (重复 " + countMap[key] + " 次)");
+        }
+    }
+
+    document.getElementById("result").value =
+        duplicates.join("\n");
+
+    document.getElementById("duplicateCount").innerText =
+        duplicates.length;
+
+    document.getElementById("totalCount").innerText =
+        matchArray.length;
+
+    document.getElementById("matchedCount").innerText = 0;
+    document.getElementById("remainingCount").innerText = 0;
+}
+
+// ================== 复制 ==================
 function copyResult(){
     const result = document.getElementById("result");
     result.select();
@@ -179,12 +206,13 @@ function copyResult(){
     alert("已复制到剪贴板！");
 }
 
+// ================== 导出 ==================
 function downloadTxt(){
     const content = document.getElementById("result").value;
     const blob = new Blob([content], {type: "text/plain"});
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "未对上清单.txt";
+    link.download = "结果.txt";
     link.click();
 }
 
