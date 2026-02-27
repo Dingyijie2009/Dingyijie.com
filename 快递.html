@@ -51,6 +51,7 @@ button{
     border-radius:8px;
     cursor:pointer;
     font-size:14px;
+    transition:0.3s;
 }
 
 .primary{
@@ -68,6 +69,10 @@ button{
     color:white;
 }
 
+button:hover{
+    opacity:0.8;
+}
+
 .stats{
     background:white;
     padding:15px;
@@ -80,7 +85,7 @@ button{
 
 <body>
 
-<h1>📦 丁奕杰制作</h1>
+<h1>📦 快递单号匹对 + 查重系统</h1>
 
 <div class="container">
     <div class="card">
@@ -96,7 +101,8 @@ button{
 
 <div style="text-align:center;">
     <button class="primary" onclick="checkTracking()">开始匹对</button>
-    <button class="warning" onclick="checkDuplicate()">检查匹对清单重复</button>
+    <button class="warning" onclick="checkDuplicate()">检查重复</button>
+    <button class="success" onclick="removeDuplicate()">去除重复生成正确清单</button>
 </div>
 
 <div class="stats">
@@ -107,17 +113,17 @@ button{
 </div>
 
 <div class="card">
-    <h3>输出结果（就是相对于匹配清单）</h3>
+    <h3>输出结果</h3>
     <textarea id="result"></textarea>
     <div style="margin-top:10px;">
-        <button class="success" onclick="copyResult()">一键复制</button>
+        <button class="primary" onclick="copyResult()">一键复制</button>
         <button class="warning" onclick="downloadTxt()">导出TXT</button>
     </div>
 </div>
 
 <script>
 
-// 标准化输入（支持空格/换行/Excel）
+// 分割输入（支持空格/换行/Excel）
 function splitInput(text){
     return text
         .split(/\s+/)
@@ -196,6 +202,29 @@ function checkDuplicate(){
 
     document.getElementById("matchedCount").innerText = 0;
     document.getElementById("remainingCount").innerText = 0;
+}
+
+// ================== 去重功能 ==================
+function removeDuplicate(){
+
+    const matchArray = splitInput(
+        document.getElementById("matchList").value
+    );
+
+    const uniqueArray = [...new Set(matchArray)];
+
+    document.getElementById("result").value =
+        uniqueArray.join("\n");
+
+    document.getElementById("duplicateCount").innerText =
+        matchArray.length - uniqueArray.length;
+
+    document.getElementById("totalCount").innerText =
+        matchArray.length;
+
+    document.getElementById("matchedCount").innerText = 0;
+    document.getElementById("remainingCount").innerText =
+        uniqueArray.length;
 }
 
 // ================== 复制 ==================
